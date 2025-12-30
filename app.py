@@ -2,7 +2,6 @@ import os
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from pytrends.request import TrendReq
 from openai import OpenAI
 
 # ================= CONFIG =================
@@ -26,19 +25,13 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Digunakan untuk keperluan akademik")
 
-# ================= GOOGLE TRENDS (CACHED) =================
-@st.cache_data(ttl=86400)  # cache data selama 24 jam
+# ================= GOOGLE TRENDS (STATIC DATA) =================
+@st.cache_data
 def load_trend_data():
-    pytrends = TrendReq(hl="id-ID", tz=360)
-    pytrends.build_payload(
-        kw_list=["kucing"],
-        timeframe="today 12-m",
-        geo="ID"
-    )
-    data = pytrends.interest_over_time()
-    return data.reset_index()
+    return pd.read_csv("trend_kucing.csv")
 
 trend_df = load_trend_data()
+
 
 
 # ================= BERANDA =================
