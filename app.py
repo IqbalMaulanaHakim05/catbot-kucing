@@ -26,15 +26,20 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Digunakan untuk keperluan akademik")
 
-# ================= GOOGLE TRENDS =================
-pytrends = TrendReq(hl="id-ID", tz=360)
-pytrends.build_payload(
-    kw_list=["kucing"],
-    timeframe="today 12-m",
-    geo="ID"
-)
+# ================= GOOGLE TRENDS (CACHED) =================
+@st.cache_data(ttl=86400)  # cache data selama 24 jam
+def load_trend_data():
+    pytrends = TrendReq(hl="id-ID", tz=360)
+    pytrends.build_payload(
+        kw_list=["kucing"],
+        timeframe="today 12-m",
+        geo="ID"
+    )
+    data = pytrends.interest_over_time()
+    return data.reset_index()
 
-trend_df = pytrends.interest_over_time().reset_index()
+trend_df = load_trend_data()
+
 
 # ================= BERANDA =================
 if menu == "Beranda":
@@ -133,3 +138,4 @@ if menu == "Chatbot":
 
         with st.chat_message("assistant"):
             st.markdown(bot_reply)
+
