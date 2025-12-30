@@ -1,5 +1,4 @@
 streamlit
 openai
-pytrends
 pandas
 matplotlib
