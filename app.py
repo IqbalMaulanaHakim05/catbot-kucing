@@ -25,14 +25,12 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Digunakan untuk keperluan akademik")
 
-# ================= GOOGLE TRENDS (STATIC DATA) =================
+# ================= GOOGLE TRENDS (STATIC CSV) =================
 @st.cache_data
 def load_trend_data():
     return pd.read_csv("trend_kucing.csv")
 
 trend_df = load_trend_data()
-
-
 
 # ================= BERANDA =================
 if menu == "Beranda":
@@ -47,7 +45,6 @@ if menu == "Beranda":
         ax.plot(
             trend_df["date"],
             trend_df["kucing"],
-            color="orange",
             linewidth=2
         )
         ax.set_xlabel("Waktu")
@@ -62,8 +59,8 @@ if menu == "Beranda":
         st.write(
             """
             - Minat pencarian tentang **kucing** cenderung stabil sepanjang tahun  
-            - Terjadi peningkatan pada periode tertentu (libur / tren media sosial)  
-            - Data ini dapat dimanfaatkan untuk edukasi, konten, dan bisnis pet care  
+            - Terjadi peningkatan pada periode tertentu  
+            - Data dapat dimanfaatkan untuk edukasi dan analisis tren  
             """
         )
 
@@ -75,8 +72,8 @@ if menu == "Chatbot":
         """
         Chatbot ini mampu:
         - Menjawab pertanyaan tentang kucing  
-        - Menganalisis **data Google Trends**  
-        - Memberikan insight berdasarkan grafik tren  
+        - Menganalisis data tren pencarian  
+        - Memberikan insight berdasarkan grafik  
         """
     )
 
@@ -86,9 +83,8 @@ if menu == "Chatbot":
                 "role": "system",
                 "content": (
                     "Kamu adalah CatBot, chatbot edukatif yang "
-                    "menganalisis tren Google Trends tentang kucing "
-                    "dan menjawab dengan bahasa Indonesia yang santai "
-                    "dan mudah dipahami."
+                    "menganalisis tren pencarian kucing dan "
+                    "menjawab dengan bahasa Indonesia yang mudah dipahami."
                 )
             }
         ]
@@ -107,7 +103,7 @@ if menu == "Chatbot":
         with st.chat_message("user"):
             st.markdown(user_input)
 
-        # ringkasan data tren untuk AI
+        # Ringkasan data tren untuk AI
         trend_summary = trend_df.tail(5).to_string(index=False)
 
         response = client.chat.completions.create(
@@ -116,8 +112,8 @@ if menu == "Chatbot":
                 {
                     "role": "system",
                     "content": (
-                        "Berikut ringkasan data Google Trends terbaru "
-                        "tentang kata 'kucing':\n" + trend_summary
+                        "Berikut ringkasan data tren pencarian kucing:\n"
+                        + trend_summary
                     )
                 }
             ]
